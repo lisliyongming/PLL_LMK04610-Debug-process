@@ -27,17 +27,28 @@ for item_string in result:
 fd_compare = open("compare.txt", "r")
 register_compare = []
 register_compare_temp = []
+register_compare_inter_temp = []
 j = 0
 for line in fd_compare.readlines():
     register_compare_temp.append(line.split('\n'))
-    register_compare.append(register_compare_temp[j][0])
+    register_compare_inter_temp.append(register_compare_temp[j][0].split(r'//'))
+    register_compare.append(register_compare_inter_temp[j][0])
     j += 1
 
 register_diff = []
 i = 0
 file_diff=open('different_register.txt', mode='w', encoding='utf-8')
-file_diff.writelines('Compare REG   New REG'+"\n")
+file_update=open('updated_register.txt', mode='w', encoding='utf-8')
+file_diff.writelines('New REG      Compared REG'+"\n")
 for item_string in result:
-    if register_compare[i] != (result_register_value[i]+','):
-        file_diff.writelines(register_compare[i] + '     ' + result_register_value[i] + '\n')
+    # print(register_compare[i])
+    # print(result_register_value[i] + ',')
+    if (register_compare[i]) != (result_register_value[i]+','):
+        file_diff.writelines(result_register_value[i] + '     ' + register_compare_temp[i][0] + '\n')
+        if len(register_compare_inter_temp[i]) > 1:
+            file_update.writelines(result_register_value[i] + ',' + r'//' + register_compare_inter_temp[i][1] + '\n')
+        else:
+            file_update.writelines(result_register_value[i] + ',' + '\n')
+    else:
+        file_update.writelines(register_compare_temp[i][0] + '\n')
     i += 1
